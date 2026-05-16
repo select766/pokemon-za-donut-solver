@@ -1,7 +1,9 @@
-# za-kinomi-solver
+# pokemon-za-donut-solver
 
 ポケモンレジェンズ Z-A DLC「M次元ラッシュ」で入手できる異次元きのみの所持数を入力し、  
 伝説ポケモン用の特別ドーナツが作れる組み合わせを自動計算するツールです。
+
+![スクリーンショット](screenshot.png)
 
 ## 使い方
 
