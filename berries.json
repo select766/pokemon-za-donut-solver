@@ -1,0 +1,67 @@
+{
+  "meta": {
+    "game": "ポケットモンスター レジェンズ Z-A",
+    "dlc": "M次元ラッシュ",
+    "maxSlots": 8,
+    "donuts": {
+      "alpha": {
+        "label": "オールドファッションアルファ",
+        "pokemon": "カイオーガ",
+        "conditions": { "sweet": 50, "spicy": 50, "sour": 210, "bitter": 180, "fresh": 370 }
+      },
+      "omega": {
+        "label": "オールドファッションオメガ",
+        "pokemon": "グラードン",
+        "conditions": { "sweet": 260, "spicy": 160, "sour": 160, "bitter": 20, "fresh": 260 }
+      },
+      "delta": {
+        "label": "オールドファッションデルタ",
+        "pokemon": "レックウザ",
+        "conditions": { "sweet": 120, "spicy": 40, "sour": 340, "bitter": 40, "fresh": 390 }
+      }
+    },
+    "sources": [
+      "https://kokorogu.com/za-kinomi",
+      "https://serebii.net/legendsz-a/anshasdonuts.shtml",
+      "https://altema.jp/legendsza/oldalpha",
+      "https://altema.jp/legendsza/olddelta",
+      "https://gamewith.jp/pokemon-za/534208",
+      "https://game8.jp/pokemon-legends-z-a/749730"
+    ]
+  },
+  "berries": [
+    { "name": "いじげんクラボのみ", "en": "Hyper Cheri",  "sweet":  0, "spicy": 40, "sour":  0, "bitter":  0, "fresh":  0 },
+    { "name": "いじげんカゴのみ",   "en": "Hyper Chesto", "sweet":  0, "spicy":  0, "sour":  0, "bitter":  0, "fresh": 40 },
+    { "name": "いじげんモモンのみ", "en": "Hyper Pecha",  "sweet": 40, "spicy":  0, "sour":  0, "bitter":  0, "fresh":  0 },
+    { "name": "いじげんチーゴのみ", "en": "Hyper Rawst",  "sweet":  0, "spicy":  0, "sour":  0, "bitter": 40, "fresh":  0 },
+    { "name": "いじげんナナシのみ", "en": "Hyper Aspear", "sweet":  0, "spicy":  0, "sour": 40, "bitter":  0, "fresh":  0 },
+    { "name": "いじげんオレンのみ", "en": "Hyper Oran",   "sweet": 10, "spicy": 20, "sour": 15, "bitter": 15, "fresh":  0 },
+    { "name": "いじげんキーのみ",   "en": "Hyper Persim", "sweet":  0, "spicy": 15, "sour": 15, "bitter": 10, "fresh": 20 },
+    { "name": "いじげんラムのみ",   "en": "Hyper Lum",    "sweet": 20, "spicy": 15, "sour": 10, "bitter":  0, "fresh": 15 },
+    { "name": "いじげんオボンのみ", "en": "Hyper Sitrus", "sweet": 15, "spicy": 10, "sour":  0, "bitter": 20, "fresh": 15 },
+    { "name": "いじげんザクロのみ", "en": "Hyper Pomeg",  "sweet": 30, "spicy": 35, "sour":  0, "bitter":  0, "fresh":  5 },
+    { "name": "いじげんネコブのみ", "en": "Hyper Kelpsy", "sweet":  5, "spicy":  0, "sour":  0, "bitter": 30, "fresh": 35 },
+    { "name": "いじげんタポルのみ", "en": "Hyper Qualot", "sweet": 35, "spicy":  0, "sour": 30, "bitter":  5, "fresh":  0 },
+    { "name": "いじげんロメのみ",   "en": "Hyper Hondew", "sweet":  0, "spicy":  5, "sour": 35, "bitter":  0, "fresh": 30 },
+    { "name": "いじげんウブのみ",   "en": "Hyper Grepa",  "sweet":  0, "spicy": 60, "sour": 25, "bitter":  0, "fresh":  5 },
+    { "name": "いじげんマトマのみ", "en": "Hyper Tamato", "sweet":  5, "spicy": 25, "sour":  0, "bitter":  0, "fresh": 60 },
+    { "name": "いじげんオッカのみ", "en": "Hyper Occa",   "sweet": 60, "spicy":  0, "sour":  0, "bitter":  5, "fresh": 25 },
+    { "name": "いじげんイトケのみ", "en": "Hyper Passho", "sweet": 25, "spicy":  0, "sour":  5, "bitter": 60, "fresh":  0 },
+    { "name": "いじげんソクノのみ", "en": "Hyper Wacan",  "sweet":  0, "spicy":  5, "sour": 60, "bitter": 25, "fresh":  0 },
+    { "name": "いじげんリンドのみ", "en": "Hyper Rindo",  "sweet": 15, "spicy": 55, "sour":  0, "bitter":  5, "fresh": 25 },
+    { "name": "いじげんヤチェのみ", "en": "Hyper Yache",  "sweet": 25, "spicy":  0, "sour":  5, "bitter": 15, "fresh": 55 },
+    { "name": "いじげんヨプのみ",   "en": "Hyper Chople", "sweet": 55, "spicy":  5, "sour": 15, "bitter": 25, "fresh":  0 },
+    { "name": "いじげんビアーのみ", "en": "Hyper Kebia",  "sweet":  0, "spicy": 15, "sour": 25, "bitter": 55, "fresh":  5 },
+    { "name": "いじげんシュカのみ", "en": "Hyper Shuca",  "sweet":  5, "spicy": 25, "sour": 55, "bitter":  0, "fresh": 15 },
+    { "name": "いじげんバコウのみ", "en": "Hyper Coba",   "sweet": 10, "spicy": 95, "sour":  0, "bitter": 10, "fresh":  5 },
+    { "name": "いじげんウタンのみ", "en": "Hyper Payapa", "sweet":  5, "spicy":  0, "sour": 10, "bitter": 10, "fresh": 95 },
+    { "name": "いじげんタンガのみ", "en": "Hyper Tanga",  "sweet": 95, "spicy": 10, "sour": 10, "bitter":  5, "fresh":  0 },
+    { "name": "いじげんヨロギのみ", "en": "Hyper Charti", "sweet":  0, "spicy": 10, "sour":  5, "bitter": 95, "fresh": 10 },
+    { "name": "いじげんカシブのみ", "en": "Hyper Kasib",  "sweet": 10, "spicy":  5, "sour": 95, "bitter":  0, "fresh": 10 },
+    { "name": "いじげんハバンのみ", "en": "Hyper Haban",  "sweet": 85, "spicy":  0, "sour":  0, "bitter":  0, "fresh": 65 },
+    { "name": "いじげんナモのみ",   "en": "Hyper Colbur", "sweet":  0, "spicy":  0, "sour": 65, "bitter":  0, "fresh": 85 },
+    { "name": "いじげんリリバのみ", "en": "Hyper Babiri", "sweet":  0, "spicy":  0, "sour": 65, "bitter": 85, "fresh":  0 },
+    { "name": "いじげんホズのみ",   "en": "Hyper Chilan", "sweet":  0, "spicy": 85, "sour":  0, "bitter": 65, "fresh":  0 },
+    { "name": "いじげんロゼルのみ", "en": "Hyper Roseli", "sweet":  0, "spicy": 65, "sour": 85, "bitter":  0, "fresh":  0 }
+  ]
+}

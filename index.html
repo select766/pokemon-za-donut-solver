@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>伝説用ドーナツ作成チェッカー｜ポケモンZA M次元ラッシュ</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+  background: #1a1a2e;
+  color: #e0e0e0;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 1.15rem;
+  color: #ffd700;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+/* ── ドーナツ選択 ── */
+.donut-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.donut-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: bold;
+  background: #16213e;
+  color: #ccc;
+  transition: all 0.15s;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.donut-btn .pokemon-name {
+  font-size: 0.72rem;
+  font-weight: normal;
+  color: #999;
+  display: block;
+}
+
+.donut-btn:hover { background: #1e2d4f; }
+
+.donut-btn.selected-alpha  { border-color: #38bdf8; color: #38bdf8; }
+.donut-btn.selected-alpha .pokemon-name { color: #7dd3fc; }
+
+.donut-btn.selected-omega  { border-color: #f97316; color: #f97316; }
+.donut-btn.selected-omega .pokemon-name { color: #fdba74; }
+
+.donut-btn.selected-delta  { border-color: #a78bfa; color: #a78bfa; }
+.donut-btn.selected-delta .pokemon-name { color: #c4b5fd; }
+
+/* ── フレーバーバー ── */
+.targets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.flavor-bar {
+  background: #16213e;
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-width: 110px;
+  text-align: center;
+}
+
+.flavor-bar .label { font-size: 0.75rem; color: #aaa; margin-bottom: 2px; }
+.flavor-bar .value { font-size: 1.1rem; font-weight: bold; }
+.flavor-bar .target-line { font-size: 0.7rem; color: #888; }
+.flavor-bar.ok .value { color: #4ade80; }
+.flavor-bar.ng .value { color: #f87171; }
+
+/* ── 結果 ── */
+#result {
+  background: #16213e;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  min-height: 60px;
+}
+
+#result .result-title { font-size: 1rem; font-weight: bold; margin-bottom: 8px; }
+#result.can    .result-title { color: #4ade80; }
+#result.cannot .result-title { color: #f87171; }
+#result.empty  .result-title { color: #888; }
+
+.recipe-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 6px; }
+.recipe-table th { background: #0f3460; padding: 4px 8px; text-align: left; color: #ccc; }
+.recipe-table td { padding: 4px 8px; border-bottom: 1px solid #2a2a4a; }
+.recipe-table tr:last-child td { border-bottom: none; }
+
+.count-badge {
+  display: inline-block;
+  background: #ffd700;
+  color: #1a1a2e;
+  font-weight: bold;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.8rem;
+}
+
+/* ── きのみ入力グリッド ── */
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-size: 0.9rem;
+  color: #ccc;
+  border-left: 3px solid #ffd700;
+  padding-left: 8px;
+  flex-shrink: 0;
+}
+
+.section-note {
+  font-size: 0.75rem;
+  color: #f97316;
+}
+
+.berry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.berry-row {
+  display: flex;
+  align-items: center;
+  background: #16213e;
+  border-radius: 6px;
+  padding: 6px 8px;
+  gap: 8px;
+  border: 1px solid transparent;
+}
+
+.berry-row .berry-name { flex: 1; font-size: 0.82rem; color: #ddd; }
+
+.berry-row .flavor-dots { display: flex; gap: 3px; flex-shrink: 0; }
+
+.dot { width: 8px; height: 8px; border-radius: 50%; opacity: 0.7; }
+.dot.sweet  { background: #f472b6; }
+.dot.spicy  { background: #f97316; }
+.dot.sour   { background: #a3e635; }
+.dot.bitter { background: #818cf8; }
+.dot.fresh  { background: #34d399; }
+.dot.none   { background: #333; opacity: 0.3; }
+
+.berry-row input[type="number"] {
+  width: 52px;
+  padding: 3px 4px;
+  background: #0f3460;
+  border: 1px solid #2a4080;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.85rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.berry-row input[type="number"]:focus { outline: none; border-color: #ffd700; }
+
+.berry-row.in-recipe { border-color: #ffd700; background: #1a2a3e; }
+
+/* ── reset button ── */
+.btn-reset {
+  display: block;
+  margin: 0 auto 16px;
+  background: #0f3460;
+  color: #ccc;
+  border: 1px solid #2a4080;
+  border-radius: 6px;
+  padding: 6px 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.btn-reset:hover { background: #16407a; }
+
+.slots-info { text-align: center; font-size: 0.78rem; color: #888; margin-bottom: 12px; }
+.insufficient-note { font-size: 0.8rem; color: #aaa; margin-top: 6px; }
+.insufficient-note span { color: #f87171; }
+</style>
+</head>
+<body>
+
+<h1>🍩 ポケモンレジェンズZA M次元ラッシュ<br>伝説用ドーナツ作成チェッカー</h1>
+
+<div class="donut-selector">
+  <button class="donut-btn" data-key="alpha" onclick="selectDonut('alpha')">
+    オールドファッションアルファ
+    <span class="pokemon-name">💧 カイオーガ</span>
+  </button>
+  <button class="donut-btn" data-key="omega" onclick="selectDonut('omega')">
+    オールドファッションオメガ
+    <span class="pokemon-name">🔥 グラードン</span>
+  </button>
+  <button class="donut-btn" data-key="delta" onclick="selectDonut('delta')">
+    オールドファッションデルタ
+    <span class="pokemon-name">🌿 レックウザ</span>
+  </button>
+</div>
+
+<div class="targets" id="flavorBars"></div>
+
+<div id="result" class="empty">
+  <div class="result-title">どのドーナツを作るか選択してください</div>
+</div>
+
+<p class="slots-info">ドーナツスロット最大：8個まで</p>
+
+<button class="btn-reset" onclick="resetAll()">すべてリセット</button>
+
+<div class="section-header">
+  <p class="section-title">異次元きのみ 所持数</p>
+  <p class="section-note">⚠ 下のほうから埋めることを推奨（上の木の実はフレーバー値が低く、役立たない場合があります）</p>
+</div>
+<div class="berry-grid" id="berryGrid"></div>
+
+<script>
+const BERRIES = [
+  { name: 'いじげんクラボのみ', sw:  0, sp: 40, so:  0, bi:  0, fr:  0 },
+  { name: 'いじげんカゴのみ',   sw:  0, sp:  0, so:  0, bi:  0, fr: 40 },
+  { name: 'いじげんモモンのみ', sw: 40, sp:  0, so:  0, bi:  0, fr:  0 },
+  { name: 'いじげんチーゴのみ', sw:  0, sp:  0, so:  0, bi: 40, fr:  0 },
+  { name: 'いじげんナナシのみ', sw:  0, sp:  0, so: 40, bi:  0, fr:  0 },
+  { name: 'いじげんオレンのみ', sw: 10, sp: 20, so: 15, bi: 15, fr:  0 },
+  { name: 'いじげんキーのみ',   sw:  0, sp: 15, so: 15, bi: 10, fr: 20 },
+  { name: 'いじげんラムのみ',   sw: 20, sp: 15, so: 10, bi:  0, fr: 15 },
+  { name: 'いじげんオボンのみ', sw: 15, sp: 10, so:  0, bi: 20, fr: 15 },
+  { name: 'いじげんザクロのみ', sw: 30, sp: 35, so:  0, bi:  0, fr:  5 },
+  { name: 'いじげんネコブのみ', sw:  5, sp:  0, so:  0, bi: 30, fr: 35 },
+  { name: 'いじげんタポルのみ', sw: 35, sp:  0, so: 30, bi:  5, fr:  0 },
+  { name: 'いじげんロメのみ',   sw:  0, sp:  5, so: 35, bi:  0, fr: 30 },
+  { name: 'いじげんウブのみ',   sw:  0, sp: 60, so: 25, bi:  0, fr:  5 },
+  { name: 'いじげんマトマのみ', sw:  5, sp: 25, so:  0, bi:  0, fr: 60 },
+  { name: 'いじげんオッカのみ', sw: 60, sp:  0, so:  0, bi:  5, fr: 25 },
+  { name: 'いじげんイトケのみ', sw: 25, sp:  0, so:  5, bi: 60, fr:  0 },
+  { name: 'いじげんソクノのみ', sw:  0, sp:  5, so: 60, bi: 25, fr:  0 },
+  { name: 'いじげんリンドのみ', sw: 15, sp: 55, so:  0, bi:  5, fr: 25 },
+  { name: 'いじげんヤチェのみ', sw: 25, sp:  0, so:  5, bi: 15, fr: 55 },
+  { name: 'いじげんヨプのみ',   sw: 55, sp:  5, so: 15, bi: 25, fr:  0 },
+  { name: 'いじげんビアーのみ', sw:  0, sp: 15, so: 25, bi: 55, fr:  5 },
+  { name: 'いじげんシュカのみ', sw:  5, sp: 25, so: 55, bi:  0, fr: 15 },
+  { name: 'いじげんバコウのみ', sw: 10, sp: 95, so:  0, bi: 10, fr:  5 },
+  { name: 'いじげんウタンのみ', sw:  5, sp:  0, so: 10, bi: 10, fr: 95 },
+  { name: 'いじげんタンガのみ', sw: 95, sp: 10, so: 10, bi:  5, fr:  0 },
+  { name: 'いじげんヨロギのみ', sw:  0, sp: 10, so:  5, bi: 95, fr: 10 },
+  { name: 'いじげんカシブのみ', sw: 10, sp:  5, so: 95, bi:  0, fr: 10 },
+  { name: 'いじげんハバンのみ', sw: 85, sp:  0, so:  0, bi:  0, fr: 65 },
+  { name: 'いじげんナモのみ',   sw:  0, sp:  0, so: 65, bi:  0, fr: 85 },
+  { name: 'いじげんリリバのみ', sw:  0, sp:  0, so: 65, bi: 85, fr:  0 },
+  { name: 'いじげんホズのみ',   sw:  0, sp: 85, so:  0, bi: 65, fr:  0 },
+  { name: 'いじげんロゼルのみ', sw:  0, sp: 65, so: 85, bi:  0, fr:  0 },
+];
+
+const DONUTS = {
+  alpha: {
+    label: 'オールドファッションアルファ',
+    pokemon: 'カイオーガ',
+    selectedClass: 'selected-alpha',
+    target: { sw:  50, sp:  50, so: 210, bi: 180, fr: 370 },
+  },
+  omega: {
+    label: 'オールドファッションオメガ',
+    pokemon: 'グラードン',
+    selectedClass: 'selected-omega',
+    target: { sw: 260, sp: 160, so: 160, bi:  20, fr: 260 },
+  },
+  delta: {
+    label: 'オールドファッションデルタ',
+    pokemon: 'レックウザ',
+    selectedClass: 'selected-delta',
+    target: { sw: 120, sp:  40, so: 340, bi:  40, fr: 390 },
+  },
+};
+
+const FLAVOR_LABELS = [
+  { key: 'sw', label: 'スイート',   cls: 'sweet'  },
+  { key: 'sp', label: 'スパイシー', cls: 'spicy'  },
+  { key: 'so', label: 'サワー',     cls: 'sour'   },
+  { key: 'bi', label: 'ビター',     cls: 'bitter' },
+  { key: 'fr', label: 'フレッシュ', cls: 'fresh'  },
+];
+
+const MAX_SLOTS = 8;
+const NODE_LIMIT = 2000000;
+
+let stocks = new Array(BERRIES.length).fill(0);
+let selectedDonut = null;
+
+// ─── ソルバー ───
+function solve(stocks, target) {
+  const avail = BERRIES
+    .map((b, i) => ({ ...b, stock: stocks[i], origIdx: i }))
+    .filter(b => b.stock > 0);
+
+  if (avail.length === 0) return null;
+
+  const T = target;
+
+  // バインディング制約に応じたソート：未達成フレーバーの合計が大きい順
+  avail.sort((a, b) => {
+    const scoreA = (a.sw + a.sp + a.so + a.bi + a.fr);
+    const scoreB = (b.sw + b.sp + b.so + b.bi + b.fr);
+    return scoreB - scoreA;
+  });
+
+  const n = avail.length;
+
+  const maxFrom = new Array(n + 1).fill(null);
+  maxFrom[n] = [0, 0, 0, 0, 0];
+  for (let i = n - 1; i >= 0; i--) {
+    const b = avail[i];
+    const prev = maxFrom[i + 1];
+    maxFrom[i] = [
+      Math.max(prev[0], b.sw),
+      Math.max(prev[1], b.sp),
+      Math.max(prev[2], b.so),
+      Math.max(prev[3], b.bi),
+      Math.max(prev[4], b.fr),
+    ];
+  }
+
+  const chosen = new Array(n).fill(0);
+  let result = null;
+  let nodeCount = 0;
+
+  function dfs(idx, slots, sw, sp, so, bi, fr) {
+    if (++nodeCount > NODE_LIMIT) return false;
+
+    if (sw >= T.sw && sp >= T.sp && so >= T.so && bi >= T.bi && fr >= T.fr) {
+      result = avail
+        .map((b, i) => ({ name: b.name, count: chosen[i], origIdx: b.origIdx }))
+        .filter(b => b.count > 0);
+      return true;
+    }
+
+    if (idx >= n || slots === 0) return false;
+
+    const mf = maxFrom[idx];
+    if (sw + mf[0] * slots < T.sw) return false;
+    if (sp + mf[1] * slots < T.sp) return false;
+    if (so + mf[2] * slots < T.so) return false;
+    if (bi + mf[3] * slots < T.bi) return false;
+    if (fr + mf[4] * slots < T.fr) return false;
+
+    const b = avail[idx];
+    const maxK = Math.min(b.stock, slots);
+
+    for (let k = maxK; k >= 0; k--) {
+      chosen[idx] = k;
+      if (dfs(idx + 1, slots - k,
+          sw + k * b.sw, sp + k * b.sp, so + k * b.so, bi + k * b.bi, fr + k * b.fr)) {
+        return true;
+      }
+    }
+    chosen[idx] = 0;
+    return false;
+  }
+
+  dfs(0, MAX_SLOTS, 0, 0, 0, 0, 0);
+  return result;
+}
+
+// ─── UI 更新 ───
+function update() {
+  const resultEl = document.getElementById('result');
+
+  if (!selectedDonut) {
+    // フレーバーバーをリセット
+    document.querySelectorAll('.flavor-bar').forEach(bar => {
+      bar.querySelector('.value').textContent = '—';
+      bar.querySelector('.target-line').textContent = '目標: —';
+      bar.classList.remove('ok', 'ng');
+    });
+    document.querySelectorAll('.berry-row').forEach(r => r.classList.remove('in-recipe'));
+    resultEl.className = 'empty';
+    resultEl.innerHTML = '<div class="result-title">どのドーナツを作るか選択してください</div>';
+    return;
+  }
+
+  const donut = DONUTS[selectedDonut];
+  const target = donut.target;
+
+  if (!stocks.some(s => s > 0)) {
+    document.querySelectorAll('.flavor-bar').forEach((bar, fi) => {
+      const fk = FLAVOR_LABELS[fi];
+      bar.querySelector('.value').textContent = '—';
+      bar.querySelector('.target-line').textContent = `目標: ${target[fk.key]}以上`;
+      bar.classList.remove('ok', 'ng');
+    });
+    resultEl.className = 'empty';
+    resultEl.innerHTML = '<div class="result-title">所持数を入力してください</div>';
+    return;
+  }
+
+  const recipe = solve(stocks, target);
+  const inRecipeSet = new Set((recipe || []).map(r => r.origIdx));
+
+  document.querySelectorAll('.berry-row').forEach((row, i) => {
+    row.classList.toggle('in-recipe', inRecipeSet.has(i));
+  });
+
+  // フレーバーバー
+  const totals = { sw: 0, sp: 0, so: 0, bi: 0, fr: 0 };
+  if (recipe) {
+    for (const { name, count } of recipe) {
+      const b = BERRIES.find(x => x.name === name);
+      if (b) {
+        totals.sw += b.sw * count;
+        totals.sp += b.sp * count;
+        totals.so += b.so * count;
+        totals.bi += b.bi * count;
+        totals.fr += b.fr * count;
+      }
+    }
+  }
+
+  document.querySelectorAll('.flavor-bar').forEach((bar, fi) => {
+    const fk = FLAVOR_LABELS[fi];
+    const val = recipe ? totals[fk.key] : 0;
+    const tgt = target[fk.key];
+    bar.querySelector('.value').textContent = recipe ? val : '×';
+    bar.querySelector('.target-line').textContent = `目標: ${tgt}以上`;
+    bar.classList.toggle('ok', recipe ? val >= tgt : false);
+    bar.classList.toggle('ng', !recipe);
+  });
+
+  // 結果
+  if (recipe) {
+    const totalUsed = recipe.reduce((s, r) => s + r.count, 0);
+    const rows = recipe.map(r =>
+      `<tr><td>${r.name}</td><td><span class="count-badge">${r.count}個</span></td></tr>`
+    ).join('');
+    resultEl.className = 'can';
+    resultEl.innerHTML = `
+      <div class="result-title">✅ 作れます！（${totalUsed} / ${MAX_SLOTS} スロット使用）</div>
+      <table class="recipe-table">
+        <thead><tr><th>きのみ</th><th>個数</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  } else {
+    // 不足フレーバーを各フレーバー単独で最適化して上限推定
+    const maxPossible = { sw: 0, sp: 0, so: 0, bi: 0, fr: 0 };
+    const avail = BERRIES.map((b, i) => ({ ...b, stock: stocks[i] })).filter(b => b.stock > 0);
+    for (const fk of Object.keys(maxPossible)) {
+      const sorted = [...avail].sort((a, b) => b[fk] - a[fk]);
+      let slots = MAX_SLOTS;
+      for (const b of sorted) {
+        if (slots <= 0) break;
+        const take = Math.min(b.stock, slots);
+        maxPossible[fk] += b[fk] * take;
+        slots -= take;
+      }
+    }
+
+    const shortages = FLAVOR_LABELS
+      .filter(f => maxPossible[f.key] < target[f.key])
+      .map(f => `<span>${f.label}（最大${maxPossible[f.key]}、目標${target[f.key]}）</span>`)
+      .join('、');
+
+    resultEl.className = 'cannot';
+    resultEl.innerHTML = `
+      <div class="result-title">❌ 作れません</div>
+      ${shortages
+        ? `<p class="insufficient-note">不足しているフレーバー：${shortages}</p>`
+        : `<p class="insufficient-note">8スロット以内で条件を満たす組み合わせが見つかりません。</p>`}`;
+  }
+}
+
+// ─── ドーナツ選択 ───
+function selectDonut(key) {
+  selectedDonut = key;
+  document.querySelectorAll('.donut-btn').forEach(btn => {
+    btn.className = 'donut-btn';
+    if (btn.dataset.key === key) {
+      btn.classList.add(DONUTS[key].selectedClass);
+    }
+  });
+  update();
+}
+
+// ─── DOM 構築 ───
+function buildUI() {
+  const barsEl = document.getElementById('flavorBars');
+  for (const f of FLAVOR_LABELS) {
+    const div = document.createElement('div');
+    div.className = 'flavor-bar';
+    div.innerHTML = `
+      <div class="label">${f.label}</div>
+      <div class="value">—</div>
+      <div class="target-line">目標: —</div>`;
+    barsEl.appendChild(div);
+  }
+
+  const grid = document.getElementById('berryGrid');
+  BERRIES.forEach((b, i) => {
+    const row = document.createElement('div');
+    row.className = 'berry-row';
+    row.dataset.idx = i;
+
+    const vals = [
+      { cls: 'sweet',  v: b.sw },
+      { cls: 'spicy',  v: b.sp },
+      { cls: 'sour',   v: b.so },
+      { cls: 'bitter', v: b.bi },
+      { cls: 'fresh',  v: b.fr },
+    ];
+    const maxVal = Math.max(...vals.map(v => v.v));
+    const dots = vals.map(f => {
+      const active = maxVal > 0 && f.v >= maxVal * 0.5;
+      return `<div class="dot ${f.cls}${active ? '' : ' none'}" title="${FLAVOR_LABELS.find(x=>x.cls===f.cls)?.label}:${f.v}"></div>`;
+    }).join('');
+
+    row.innerHTML = `
+      <span class="berry-name">${b.name}</span>
+      <div class="flavor-dots">${dots}</div>
+      <input type="number" min="0" max="99" value="0" data-idx="${i}">`;
+
+    row.querySelector('input').addEventListener('input', e => {
+      const val = parseInt(e.target.value, 10);
+      stocks[i] = isNaN(val) || val < 0 ? 0 : val;
+      update();
+    });
+
+    grid.appendChild(row);
+  });
+}
+
+function resetAll() {
+  stocks.fill(0);
+  document.querySelectorAll('#berryGrid input').forEach(el => el.value = 0);
+  update();
+}
+
+buildUI();
+update();
+</script>
+</body>
+</html>
